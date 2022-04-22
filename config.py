@@ -4,7 +4,8 @@ import os
 class Config:
     DEBUG = False
     DEVELOPMENT = False
-    SECRET_KEY = os.getenv("SECRET_KEY", "this-is-the-default-key")
+    BOT_TOKEN = os.getenv("BOT_TOKEN", "")
+    BASE_URL = os.getenv("BASE_URL", "")
 
 
 class ProductionConfig(Config):
