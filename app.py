@@ -21,7 +21,11 @@ base_url: str = app.config.get("BASE_URL")  # type: ignore
 if not base_url:
     raise ValueError("BASE_URL is not set")
 
-bot.set_webhook(f"{base_url}/updates/{bot_token}")
+
+me = bot.get_me()
+print(f"Hello! My name is {me.first_name}")
+
+bot.set_webhook(url=f"{base_url}/updates/{bot_token}")
 
 
 @app.route("/")
