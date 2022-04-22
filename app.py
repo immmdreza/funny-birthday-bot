@@ -25,7 +25,11 @@ if not base_url:
 me = bot.get_me()
 print(f"Hello! My name is {me.first_name}")
 
-bot.set_webhook(url=f"{base_url}/updates/{bot_token}")
+try:
+    if bot.set_webhook(url=f"{base_url}/updates/{bot_token}"):
+        print("Webhook setup success")
+except Exception:
+    print("Webhook setup failed")
 
 
 @app.route("/")
