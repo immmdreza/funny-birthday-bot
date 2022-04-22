@@ -4,6 +4,8 @@ from flask import Flask, request
 from telegram import Bot
 from telegram.update import Update
 
+from update_processor import process_update
+
 
 app = Flask(__name__)
 
@@ -39,16 +41,5 @@ def index():
 
 @app.post(f"/updates/{bot_token}")
 def updates():
-    update_json = request.get_json()
-    update = Update.de_json(update_json, bot)
-
-    if update is None:
-        return
-
-    if update.message is not None:
-        bot.send_message(
-            chat_id=update.message.chat_id,
-            text=update.message.text,
-        )
-
+    process_update(bot, Update.de_json(request.get_json(), bot))
     return {"ok": True}
