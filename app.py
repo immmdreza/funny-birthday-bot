@@ -1,10 +1,12 @@
 import os
+import re
 
 from flask import Flask, request
-from telegram import Bot
+from telegram import Bot, Message
 from telegram.update import Update
 
-from update_processor import process_update
+from update_managers.update_manager import UpdateManager
+from my_filters.message_filters import TextRegex
 
 
 app = Flask(__name__)
@@ -18,6 +20,8 @@ if not bot_token:
     raise ValueError("BOT_TOKEN is not set")
 
 bot = Bot(bot_token)
+manager = UpdateManager(bot)
+
 
 base_url: str = app.config.get("BASE_URL")  # type: ignore
 if not base_url:
@@ -41,5 +45,15 @@ def index():
 
 @app.post(f"/updates/{bot_token}")
 def updates():
-    process_update(bot, Update.de_json(request.get_json(), bot))
+    manager.enqueue_update(Update.de_json(request.get_json(), bot))
     return {"ok": True}
+
+
+@manager.register_message(TextRegex(re.compile("^/start", re.IGNORECASE)))
+def echo(bot: Bot, message: Message) -> None:
+    if message.text is not None:
+        message.reply_text(
+            "Hello! Here is the @FunnyBirthdayBot 🎂.\n"
+            "While i'm with you, you'll never forget a birthday again."
+            "\n\nJust let me join your group."
+        )
