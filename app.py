@@ -42,3 +42,5 @@ def updates():
             chat_id=update.message.chat_id,
             text=update.message.text,
         )
+
+    return {"ok": True}
